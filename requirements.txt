@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+python-multipart
+transformers
+torch
+accelerate
+bm25s
+underthesea
+pandas
+soundfile
+librosa
