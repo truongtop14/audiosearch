@@ -10,13 +10,15 @@ import bm25s
 import pandas as pd
 import torch
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from transformers import pipeline
 from underthesea import word_tokenize
 
 CSV_PATH = Path(os.getenv('CSV_PATH', 'dthu_all.csv'))
 MODEL_NAME = os.getenv('ASR_MODEL', 'vinai/PhoWhisper-small')
-MIN_ID = int(os.getenv('MIN_ID', '1000'))
+MIN_ID = int(os.getenv('MIN_ID', '800'))
 MAX_AUDIO_BYTES = 20 * 1024 * 1024
 SUPPORTED_EXTENSIONS = {'.wav', '.mp3', '.m4a', '.webm', '.ogg', '.flac', '.mp4'}
 
@@ -163,3 +165,11 @@ async def audio_search(file: UploadFile = File(...), top_k: int = Query(5, ge=1,
         await file.close()
         if temp_path and os.path.exists(temp_path):
             os.unlink(temp_path)
+
+
+# Serve the search interface from the same origin as the API.
+app.mount('/static', StaticFiles(directory=Path(__file__).parent / 'static'), name='static')
+
+@app.get('/', include_in_schema=False)
+def home():
+    return FileResponse(Path(__file__).parent / 'static' / 'index.html')

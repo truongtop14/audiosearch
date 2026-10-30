@@ -1,11 +1,9 @@
 fastapi
-uvicorn[standard]
+uvicorn
 python-multipart
-transformers
-torch
-accelerate
 bm25s
-underthesea
 pandas
-soundfile
-librosa
+transformers
+accelerate
+underthesea
+# Install torch separately (CPU or CUDA build) before installing this file.
